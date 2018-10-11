@@ -10,7 +10,7 @@ wxapp微信小程序长按拖拽排序+左滑删除
 
 ## 效果图
 
-![效果图](http://idtcdn.oss-cn-hangzhou.aliyuncs.com/external/dongfang/image.png)
+![效果图](https://github.com/yanglei0323/DragSort-master/blob/master/assets/img/WeChatSight41.gif)
 
 ## 案例
 
