@@ -1,0 +1,93 @@
+<view>
+<view style="position: relative; z-index: 199;">
+	<!-- catchtouchstart="draggleTouch" -->
+	<!-- 监测移动事件 -->
+	<view class="touchView" style="height:{{scrollPosition.scrollViewHeight}}px;" catchlongpress="longpressfuc" 
+		  catchtouchmove="{{movableViewPosition.data.is_complete?'':'draggleTouch'}}" catchtouchend="{{movableViewPosition.data.is_complete?'':'draggleTouch'}}">
+	</view>
+	<!-- 用于展示给用户的移动item -->
+	<movable-area class="moveable_row move_row {{movableViewPosition.className}}"
+				  style="height: {{scrollPosition.scrollViewHeight}}px;">
+		<movable-view style="height: {{scrollPosition.everyOptionCell}}px; width: 100%;"
+					  direction="vertical" x="{{movableViewPosition.x}}" y="{{movableViewPosition.y}}"
+					  inertia="false" damping="9999"  friction="9999">
+			<view class="edit_row edit_row_show {{movableViewPosition.data.is_complete?'completed':''}}">
+				<view class="edit_row_left">
+					<view class="edit_col1" data-id="{{movableViewPosition.data.id}}" bindtap="selectOption">
+						<!-- icon_type	int	类型（1: 医院医疗类 2:线下活动类 3: 线上讲座类 4:服务消费类 5:社群推荐类） -->
+						<image src="/assets/img/icons/1.jpg"></image>
+					</view>
+					<view class="edit_col2">
+						<view class="secname">{{movableViewPosition.data.title}}</view>
+						<view class="seccode">{{movableViewPosition.data.desc}}</view>
+						<view class="address" wx:if="{{movableViewPosition.data.address != null}}">{{movableViewPosition.data.address}} <image src="{{img_path}}/assets/img/jiandang/card_arrow.png"></image></view>
+					</view>
+					
+					
+				</view>
+				<image wx:if="{{movableViewPosition.data.is_extend}}" src="{{img_path}}/assets/img/icons/arrowR.png" class="arrowR"></image>
+				<view class="check_padding_box" wx:if="{{!movableViewPosition.data.is_extend}}">
+					<view class="check_box"><image src="{{img_path}}/assets/img/icons/CheckBox@3x.png" wx:if="{{movableViewPosition.data.is_complete}}"></image></view>
+				</view>
+				<image src="{{img_path}}/assets/img/jiandang/Mark@3x.png" class="mark_icon" wx:if="{{!movableViewPosition.data.readed && movableViewPosition.data.is_extend}}"></image>
+			</view>
+		</movable-view>
+	</movable-area>
+
+	
+	<!-- 页面card -->
+	<scroll-view class="edit_row_holder" scroll-y="{{scrollPosition.scrollY}}"
+				 style="height: {{scrollPosition.scrollViewHeight}}px;" bindscroll="bindscroll"  bindscrolltolower="scrolltolower">
+		<!-- 用户信息 start -->
+		<view class="user-info-box">
+			<image src="{{user.headimgurl}}" mode="aspectFill" class="user-headimg" wx:if="{{user.headimgurl}}"></image>
+			<view class="user-edb" wx:if="{{user.expected_birth_week}}"><text>我的待办事项</text>{{user.expected_birth_week}}</view>
+		</view>
+		<!-- 用户信息 end -->
+		<block wx:for="{{optionsListData}}" wx:key="id">
+			<view class="edit_row  {{item.selectClass}} {{item.show_delet?'show-delet':''}} {{item.is_complete?'completed':''}}" data-index="{{index}}" bindtouchmove="handletouchmove" bindtouchstart="handletouchstart" bindtouchend="handletouchend" animation="{{animation_flag == index ? animationData :''}}">
+				<view class="test" wx:if="{{item.selectClass == 'dragSelected'}}"></view>
+				<view class="test test-delet" wx:if="{{item.show_delet}}" data-index="{{index}}" catchtap="fadeoutBox"></view>
+				<view class="edit_row_left" bindtap="{{item.is_extend || item.style_type == 3 ? 'goUrl':''}}" data-url="{{item.url}}" data-id="{{item.id}}" data-status="{{item.is_complete?'0':'1'}}" data-index="{{index}}">
+					<view class="edit_col1" data-id="{{item.id}}">
+						<!-- icon_type	int	类型（1: 医院医疗类 2:线下活动类 3: 线上讲座类 4:服务消费类 5:社群推荐类 6:提示类） -->
+						<image src="/assets/img/icons/1.jpg"></image>
+					</view>
+					<view class="edit_col2">
+						<view class="secname">{{item.title}}</view>
+						<view class="seccode {{item.style_type == 3?'seccode-3':''}} {{item.address != null?'col-2':''}}">{{item.desc}}</view>
+						<view class="address" wx:if="{{item.address != null}}" catchtap="goMap" data-index="{{index}}">{{item.address}} </view>
+					</view>
+					
+				</view>	
+				<view class="branches-checkbox-left" wx:if="{{item.style_type == 3}}"></view>
+				<image wx:if="{{item.is_extend}}" src="{{img_path}}/assets/img/icons/arrowR.png" class="arrowR {{item.show_delet?'arrowR-delet':''}}"></image>
+				<view class="check_padding_box" data-flag="{{index}}" data-id="{{item.id}}" wx:if="{{!item.is_extend}}">
+					<view class="check_box"><image src="{{img_path}}/assets/img/icons/CheckBox@3x.png" wx:if="{{item.is_complete}}"></image></view>
+				</view>
+				<image src="{{img_path}}/assets/img/jiandang/Mark@3x.png" class="mark_icon" wx:if="{{!item.readed && item.is_extend}}"></image>
+
+				<view class="delet-box" data-id="{{item.id}}">忽略</view>
+			</view>
+		</block>
+	</scroll-view>
+
+	
+</view>
+<!-- 弹窗 -->
+<!-- <view class='wx_dialog_container {{isShow?"transition_view":""}}' catchtouchmove="preventD">
+    <view class='wx-mask' catchtouchmove="preventD"></view>
+    <view class='wx-dialog' catchtouchmove="preventD">
+      <view class="wx-real-dialog">
+        <view class='wx-dialog-title'></view>
+          <text class='wx-dialog-content'>忽略后此事项将彻底删除，后续无法恢复，确认忽略？</text>
+          <view class='wx-dialog-footer'>
+            <view class='wx-dialog-btn' catchtap='hidedialog'>取消</view>
+            <view class='wx-dialog-btn' catchtap='confirmEvent'>确认</view>
+            
+          </view>
+      </view>
+        
+    </view>
+</view> -->
+</view>
