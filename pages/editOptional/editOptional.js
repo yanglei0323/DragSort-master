@@ -366,10 +366,8 @@ Page({
       // let text = "";
       //左右方向滑动
       if (Math.abs(tx) > Math.abs(ty)) {
-        let scrollPosition=that.data.scrollPosition;
-        scrollPosition.scrollY = false;
         that.setData({
-          scrollPosition:scrollPosition
+          ['scrollPosition.scrollY']: false
         })
         if (tx < -80 && (ty <= 50 && ty >= -50)) {
           // text = "向左滑动";
@@ -382,40 +380,25 @@ Page({
             }
             optionsListData[index].show_delet=true;
             that.setData({
-                optionsListData:optionsListData
+                optionsListData
             });
           }
-          let scrollPosition=that.data.scrollPosition;
-          scrollPosition.scrollY = true;
-          that.setData({
-            scrollPosition:scrollPosition
-          })
         }
         else if (tx > 80 && (ty <= 50 && ty >= -50)) {
           // text = "向右滑动";
-          that.data.flag= 2;
+          that.data.flag= 0;
           if(that.data.swiper_index != undefined){
             let index = that.data.swiper_index;
-            let optionsListData = that.data.optionsListData;
-            optionsListData[index].show_delet=false;
             that.setData({
-                optionsListData:optionsListData
+                ['optionsListData['+ index +'].show_delet']: false
             });
           }
-          let scrollPosition=that.data.scrollPosition;
-          scrollPosition.scrollY = true;
-          that.setData({
-            scrollPosition:scrollPosition
-          })
         }
-      }else{
-        let scrollPosition=that.data.scrollPosition;
-        scrollPosition.scrollY = true;
-        that.setData({
-          scrollPosition:scrollPosition
-        })
       }
       
+      that.setData({
+        ['scrollPosition.scrollY']: true
+      })
       //将当前坐标进行保存以进行下一次计算
       // this.data.lastX = currentX;
       // this.data.lastY = currentY;
@@ -429,27 +412,23 @@ Page({
       that.data.lastY = event.touches[0].pageY;
       if(event.currentTarget.dataset.index != undefined){
         that.setData({
-          swiper_index:event.currentTarget.dataset.index
+          swiper_index: event.currentTarget.dataset.index
         })
       }
     },
     fadeoutBox:function(e){
       var that=this,
           index=e.currentTarget.dataset.index;
-      let optionsListData = that.data.optionsListData;
-      optionsListData[index].show_delet=false;
       that.setData({
-          optionsListData:optionsListData
+        ['optionsListData['+ index +'].show_delet']: false
       });
     },
     handletouchend:function(event) {
       var that=this;
       that.data.flag= 0 ;
       // console.log('结束滑动');
-      let scrollPosition=that.data.scrollPosition;
-      scrollPosition.scrollY = true;
       that.setData({
-        scrollPosition:scrollPosition
+        ['scrollPosition.scrollY']: true
       })
     },
     toggleAssistant:function(){
